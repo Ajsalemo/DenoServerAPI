@@ -11,4 +11,7 @@
 # --lock-write = write hashes to the lock file for integrity checking 
 # https://deno.land/manual@v1.13.2/linking_to_external_code/integrity_checking
 
-deno run --watch --allow-net --lock=lock.json --lock-write server.ts
+# --allow-read = allow read access to the file system
+# https://deno.land/manual@v1.13.2/getting_started/permissions
+
+deno run --watch --allow-net --lock=lock.json --lock-write --allow-read server.ts
