@@ -3,7 +3,7 @@ FROM denoland/deno:1.13.2
 WORKDIR /app
 
 COPY . .
-RUN deno cache server.ts
+RUN deno --unstable cache server.ts
 
 # Copy SSH related files over
 COPY sshd_config /etc/ssh/
