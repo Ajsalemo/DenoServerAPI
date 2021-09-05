@@ -14,4 +14,4 @@
 # --allow-read = allow read access to the file system
 # https://deno.land/manual@v1.13.2/getting_started/permissions
 
-deno run --unstable --watch --allow-net --lock=lock.json --lock-write --allow-read server.ts
+deno run --unstable --watch --allow-net --lock=lock.json --lock-write --allow-read --allow-env server.ts
