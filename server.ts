@@ -1,11 +1,12 @@
 import { logOutPermissions } from "./config/permissions.ts";
 import { neighborhoods } from "./database/mongoClient.ts";
-
+import { findAllNeighborhoodsController } from "./controllers/findAllNeighborhoodsController.ts";
+import { findNeighborhoodByName } from "./controllers/findNeighborhoodByName.ts";
 // Check and log out permissions defined in run.sh
 await logOutPermissions();
 // Listen on port 8080
 const server = Deno.listen({ port: 8080 });
-console.log(`Deno is listening on port 8080`);
+console.log("Deno is listening on port 8080");
 
 for await (const conn of server) {
   // In order to not be blocking, we need to handle each connection individually
@@ -31,26 +32,7 @@ async function serveHttp(conn: Deno.Conn) {
         break;
       case "/api/neighborhood/find/all":
         try {
-          /* 
-            The empty object for the first argument equates to 'find all'
-            'projection' specifies to include the name field and exclude the _id field in the response
-            'noCursorTimeout' on the FindOptions method is for this issue: https://github.com/denodrivers/deno_mongo/issues/179
-          */
-          const getAllNeighborhoods = await neighborhoods
-            .find(
-              {},
-              { projection: { name: 1, _id: 0 }, noCursorTimeout: false }
-            )
-            .toArray();
-
-          const jsonConvertedGetAllNeighborhoods =
-            JSON.stringify(getAllNeighborhoods);
-
-          requestEvent.respondWith(
-            new Response(jsonConvertedGetAllNeighborhoods, {
-              status: 200,
-            })
-          );
+          await findAllNeighborhoodsController(requestEvent, neighborhoods);
         } catch (e) {
           console.log(e);
         }
@@ -59,22 +41,7 @@ async function serveHttp(conn: Deno.Conn) {
         try {
           const params = url.searchParams;
           const name = params.get("name");
-
-          if (!name || name === "") {
-            console.error("Name parameter is empty or null");
-            const emptyParamError = "Name parameter is empty or null";
-            requestEvent.respondWith(
-              new Response(emptyParamError, {
-                status: 500,
-              })
-            );
-          } else {
-            requestEvent.respondWith(
-              new Response(name, {
-                status: 200,
-              })
-            );
-          }
+          await findNeighborhoodByName(requestEvent, neighborhoods, name);
         } catch (e) {
           console.log(e);
         }
