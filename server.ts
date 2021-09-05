@@ -55,6 +55,30 @@ async function serveHttp(conn: Deno.Conn) {
           console.log(e);
         }
         break;
+      case "/api/neighborhood/find":
+        try {
+          const params = url.searchParams;
+          const name = params.get("name");
+
+          if (!name || name === "") {
+            console.error("Name parameter is empty or null");
+            const emptyParamError = "Name parameter is empty or null";
+            requestEvent.respondWith(
+              new Response(emptyParamError, {
+                status: 500,
+              })
+            );
+          } else {
+            requestEvent.respondWith(
+              new Response(name, {
+                status: 200,
+              })
+            );
+          }
+        } catch (e) {
+          console.log(e);
+        }
+        break;
       // deno-lint-ignore no-case-declarations
       default:
         const notFoundResponse = "HTTP 404 - Not Found";
