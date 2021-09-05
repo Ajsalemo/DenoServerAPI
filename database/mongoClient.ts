@@ -19,6 +19,13 @@ console.log(MONGO_ATLAS_DATABASE);
 console.log(MONGO_ATLAS_AUTH_MECHANISM);
 console.log(MONGO_ATLAS_COLLECTION);
 
+console.log(Deno.env.get('MONGO_ATLAS_USERNAME'))
+console.log(Deno.env.get('MONGO_ATLAS_PASSWORD'))
+console.log(Deno.env.get('MONGO_ATLAS_CLUSTER'))
+console.log(Deno.env.get('MONGO_ATLAS_DATABASE'))
+console.log(Deno.env.get('MONGO_ATLAS_AUTH_MECHANISM'))
+console.log(Deno.env.get('MONGO_ATLAS_COLLECTION'))
+
 const client = new MongoClient();
 await client.connect(
   `mongodb+srv://${MONGO_ATLAS_USERNAME}:${MONGO_ATLAS_PASSWORD}@${MONGO_ATLAS_CLUSTER}/${MONGO_ATLAS_DATABASE}?authMechanism=${MONGO_ATLAS_AUTH_MECHANISM}`
