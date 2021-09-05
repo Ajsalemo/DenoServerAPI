@@ -1,4 +1,5 @@
-import { logOutPermissions } from "./permissions.ts";
+import { logOutPermissions } from "./config/permissions.ts";
+import { neighborhoods } from "./database/mongoClient.ts";
 
 // Check and log out permissions defined in run.sh
 await logOutPermissions();
@@ -15,7 +16,7 @@ for await (const conn of server) {
 async function serveHttp(conn: Deno.Conn) {
   const httpConn = Deno.serveHttp(conn);
   for await (const requestEvent of httpConn) {
-    const url = new URL(requestEvent.request.url)
+    const url = new URL(requestEvent.request.url);
     switch (url.pathname) {
       // deno-lint-ignore no-case-declarations
       case "/":
@@ -28,14 +29,31 @@ async function serveHttp(conn: Deno.Conn) {
           })
         );
         break;
-      // deno-lint-ignore no-case-declarations
-      case "/test":
-        const testBody = "This is /test";
-        requestEvent.respondWith(
-          new Response(testBody, {
-            status: 200,
-          })
-        );
+      case "/api/neighborhood/find/all":
+        try {
+          /* 
+            The empty object for the first argument equates to 'find all'
+            'projection' specifies to include the name field and exclude the _id field in the response
+            'noCursorTimeout' on the FindOptions method is for this issue: https://github.com/denodrivers/deno_mongo/issues/179
+          */
+          const getAllNeighborhoods = await neighborhoods
+            .find(
+              {},
+              { projection: { name: 1, _id: 0 }, noCursorTimeout: false }
+            )
+            .toArray();
+
+          const jsonConvertedGetAllNeighborhoods =
+            JSON.stringify(getAllNeighborhoods);
+
+          requestEvent.respondWith(
+            new Response(jsonConvertedGetAllNeighborhoods, {
+              status: 200,
+            })
+          );
+        } catch (e) {
+          console.log(e);
+        }
         break;
       // deno-lint-ignore no-case-declarations
       default:
@@ -45,6 +63,7 @@ async function serveHttp(conn: Deno.Conn) {
             status: 404,
           })
         );
+        break;
     }
   }
 }
