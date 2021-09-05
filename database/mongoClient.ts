@@ -1,20 +1,23 @@
 import { MongoClient } from "https://deno.land/x/mongo@v0.24.0/mod.ts";
 import { config } from "https://deno.land/x/dotenv/mod.ts";
+import "https://deno.land/x/dotenv/load.ts";
 
 // Mongo Atlas specific environment variables
-const MONGO_ATLAS_USERNAME = config()["MONGO_ATLAS_USER"];
-const MONGO_ATLAS_PASSWORD = config()["MONGO_ATLAS_PASSWORD"];
-const MONGO_ATLAS_CLUSTER = config()["MONGO_ATLAS_CLUSTER"];
-const MONGO_ATLAS_DATABASE = config()["MONGO_ATLAS_DATABASE"];
-const MONGO_ATLAS_AUTH_MECHANISM = config()["MONGO_ATLAS_AUTH_MECHANISM"];
-const MONGO_ATLAS_COLLECTION = config()["MONGO_ATLAS_COLLECTION"];
+const {
+  MONGO_ATLAS_USERNAME,
+  MONGO_ATLAS_PASSWORD,
+  MONGO_ATLAS_CLUSTER,
+  MONGO_ATLAS_DATABASE,
+  MONGO_ATLAS_AUTH_MECHANISM,
+  MONGO_ATLAS_COLLECTION,
+} = config();
 
-console.log(MONGO_ATLAS_USERNAME)
-console.log(MONGO_ATLAS_PASSWORD)
-console.log(MONGO_ATLAS_CLUSTER)
-console.log(MONGO_ATLAS_DATABASE)
-console.log(MONGO_ATLAS_AUTH_MECHANISM)
-console.log(MONGO_ATLAS_COLLECTION)
+console.log(MONGO_ATLAS_USERNAME);
+console.log(MONGO_ATLAS_PASSWORD);
+console.log(MONGO_ATLAS_CLUSTER);
+console.log(MONGO_ATLAS_DATABASE);
+console.log(MONGO_ATLAS_AUTH_MECHANISM);
+console.log(MONGO_ATLAS_COLLECTION);
 
 const client = new MongoClient();
 await client.connect(
