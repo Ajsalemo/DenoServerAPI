@@ -1,7 +1,10 @@
 import { logOutPermissions } from "./config/permissions.ts";
 import { neighborhoods } from "./database/mongoClient.ts";
 import { findAllNeighborhoodsController } from "./controllers/findAllNeighborhoodsController.ts";
-import { findNeighborhoodByName } from "./controllers/findNeighborhoodByName.ts";
+import { findNeighborhoodByNameController } from "./controllers/findNeighborhoodByNameController.ts";
+import { rootController } from "./controllers/rootController.ts";
+import { notFoundController } from "./controllers/notFoundController.ts";
+
 // Check and log out permissions defined in run.sh
 await logOutPermissions();
 // Listen on port 8080
@@ -21,14 +24,7 @@ async function serveHttp(conn: Deno.Conn) {
     switch (url.pathname) {
       // deno-lint-ignore no-case-declarations
       case "/":
-        const body = `Your user-agent is:\n\n${
-          requestEvent.request.headers.get("user-agent") ?? "Unknown"
-        }`;
-        requestEvent.respondWith(
-          new Response(body, {
-            status: 200,
-          })
-        );
+        rootController(requestEvent);
         break;
       case "/api/neighborhood/find/all":
         try {
@@ -41,19 +37,18 @@ async function serveHttp(conn: Deno.Conn) {
         try {
           const params = url.searchParams;
           const name = params.get("name");
-          await findNeighborhoodByName(requestEvent, neighborhoods, name);
+          await findNeighborhoodByNameController(
+            requestEvent,
+            neighborhoods,
+            name
+          );
         } catch (e) {
           console.log(e);
         }
         break;
       // deno-lint-ignore no-case-declarations
       default:
-        const notFoundResponse = "HTTP 404 - Not Found";
-        requestEvent.respondWith(
-          new Response(notFoundResponse, {
-            status: 404,
-          })
-        );
+        notFoundController(requestEvent);
         break;
     }
   }

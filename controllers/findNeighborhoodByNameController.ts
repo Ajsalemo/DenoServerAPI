@@ -1,4 +1,4 @@
-export const findNeighborhoodByName = async (
+export const findNeighborhoodByNameController = async (
   requestEvent: any,
   neighborhoods: any,
   name: string | null
