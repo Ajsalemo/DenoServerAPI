@@ -10,12 +10,12 @@ resources:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '8319dc50-3086-4ccb-ac59-bc38c68aebc6'
-  imageRepository: 'denoserverapi'
-  containerRegistry: 'ansalemocontainerregistry.azurecr.io'
+  dockerRegistryServiceConnection: '<your service connection>'
+  imageRepository: '<your Image repository>'
+  containerRegistry: '<your container registry>.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
-  webAppName: 'ansalemo-deno-docker-image'
+  webAppName: '<your app name>'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -48,9 +48,9 @@ stages:
         - task: AzureRmWebAppDeployment@4
           inputs:
             ConnectionType: 'AzureRM'
-            azureSubscription: 'Ansalemo(4388fa06-bf66-4497-82c2-991ba75ecb97)'
+            azureSubscription: '<your subscription>'
             appType: 'webAppContainer'
-            WebAppName: 'ansalemo-deno-docker-image'
+            WebAppName: '$(webAppName)'
             DockerNamespace: '$(containerRegistry)'
             DockerRepository: '$(imageRepository)'
             DockerImageTag: '$(tag)'
